@@ -1,0 +1,26 @@
+# Tofu
+
+> Tofu (tofuhq.com) is an agentic go-to-market (GTM) platform that automates always-on, integrated marketing and sales campaigns inside a team's existing GTM stack — helping teams ship integrated campaigns dramatically faster across outbound prospecting, lead nurturing, event follow-up, sales acceleration, deal re-engagement, and customer expansion. Backed by Index Ventures. No public developer API is documented as of this profile.
+
+## Product
+- [Platform](https://tofuhq.com/platform): The agentic GTM platform overview.
+- [Case Studies](https://tofuhq.com/case-study): Customer outcomes and stories.
+- [Request a Demo](https://tofuhq.com/lp/request-a-demo): Book a product demo.
+
+## Docs & Support
+- [Documentation](https://docs.tofuhq.com): Product documentation site.
+- [Status](https://status.tofuhq.com): Tofu platform status page.
+- [Login](https://login.tofuhq.com): Application login.
+
+## Company
+- [Blog](https://tofuhq.com/blog): Company and product blog.
+- [Privacy Policy](https://tofuhq.com/privacy-policy): Privacy policy.
+- [Terms & Conditions](https://tofuhq.com/terms-and-conditions): Terms of service.
+
+## Integrations
+- Integrates with major CRM and sales tools including Salesforce, HubSpot, Marketo, and Outreach.
+
+## Notes
+- Tofu consumes third-party APIs (CRM/sales) rather than publishing a public developer API.
+- SOC 2 compliance is advertised on the homepage.
+- No public OpenAPI, SDKs, MCP server, or /.well-known discovery documents were found during enrichment.

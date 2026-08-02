@@ -1,8 +1,26 @@
 aid: tofu
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source: []
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/tofu.png
 name: Tofu
-description: 'Tofu is a company surfaced as a portfolio company of index-ventures and added to the API
-  Evangelist network as a stub for enrichment. Sector: ai-ml. This profile is a lead awaiting the enrichment
-  pipeline.'
+description: 'Tofu (tofuhq.com) is an agentic go-to-market (GTM) platform that automates
+  always-on, integrated marketing and sales campaigns inside a team''s existing GTM
+  stack, helping revenue teams ship integrated campaigns dramatically faster. It targets
+  outbound prospecting, lead nurturing, event follow-up, sales acceleration, stalled-deal
+  re-engagement, and customer expansion, and integrates with major CRM and sales tools
+  including Salesforce, HubSpot, Marketo, and Outreach. Tofu is a hosted SaaS product
+  backed by Index Ventures; it consumes third-party APIs rather than publishing a public
+  developer API, and advertises SOC 2 compliance. No public OpenAPI, SDK, MCP server,
+  or /.well-known discovery surface was found during enrichment.'
 url: https://raw.githubusercontent.com/api-evangelist/tofu/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -12,10 +30,16 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-21'
 tags:
 - Company
 - Ai Ml
+- Marketing
+- Go-To-Market
+- Sales
+- Automation
+- CRM
+- Campaigns
 apis: []
 maintainers:
 - FN: Kin Lane
@@ -24,4 +48,31 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: http://tofuhq.com
+  url: https://tofuhq.com
+- type: Documentation
+  url: https://docs.tofuhq.com
+- type: Blog
+  url: https://tofuhq.com/blog
+- type: StatusPage
+  url: https://status.tofuhq.com
+- type: Login
+  url: https://login.tofuhq.com
+- type: TermsOfService
+  url: https://tofuhq.com/terms-and-conditions
+- type: PrivacyPolicy
+  url: https://tofuhq.com/privacy-policy
+- type: Compliance
+  url: https://tofuhq.com
+- type: Lifecycle
+  url: lifecycle/tofu-lifecycle.yml
+- type: Conformance
+  url: conformance/tofu-conformance.yml
+- type: DomainSecurity
+  url: security/tofu-domain-security.yml
+- type: LLMsTxt
+  url: llms/tofu-llms.txt
+x-enrichment:
+  date: '2026-07-21'
+  status: minimal
+  artifacts_added: 4
+  pass: local-v1

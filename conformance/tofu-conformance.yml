@@ -1,0 +1,14 @@
+generated: '2026-07-21'
+method: searched
+source: https://tofuhq.com
+standards:
+- id: soc2
+  conforms: true
+  evidence: SOC 2 / AICPA SOC compliance badge displayed on the tofuhq.com homepage.
+- id: oauth2
+  conforms: false
+  evidence: No public OpenAPI or documented OAuth surface found.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: No public API specification available to assess error formatting.
+notes: Tofu is an agentic go-to-market (GTM) SaaS platform. No public developer API specification was found; conformance is limited to the published SOC 2 compliance posture surfaced on the homepage.

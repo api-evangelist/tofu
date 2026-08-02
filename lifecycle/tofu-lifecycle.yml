@@ -1,0 +1,14 @@
+generated: '2026-07-21'
+method: searched
+source: https://status.tofuhq.com
+status_page: https://status.tofuhq.com
+versioning:
+  scheme: unknown
+  note: Tofu publishes no public API versioning or deprecation policy; the product is a hosted SaaS GTM platform with no documented public developer API.
+deprecation:
+  policy_url: null
+  sunset_header: false
+sla:
+  url: null
+deprecated_operations: []
+notes: Only a public status page (status.tofuhq.com) was found. No public OpenAPI, versioning policy, deprecation policy, or SLA is documented as of this pass.
