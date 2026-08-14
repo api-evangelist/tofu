@@ -1,26 +1,32 @@
 aid: tofu
 accessModel:
-  pricing: unknown
-  onboarding: unknown
-  trial: false
-  try_now: false
-  public: false
-  label: Unknown
-  confidence: low
-  source: []
-  generated: '2026-07-22'
-  method: derived
+  pricing: freemium
+  onboarding: self-service
+  trial: true
+  try_now: true
+  public: true
+  label: Freemium
+  confidence: high
+  source:
+  - https://enrich.tofuhq.com
+  - https://www.npmjs.com/package/@tofuhq/enrich
+  generated: '2026-08-13'
+  method: searched
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/tofu.png
 name: Tofu
-description: 'Tofu (tofuhq.com) is an agentic go-to-market (GTM) platform that automates
-  always-on, integrated marketing and sales campaigns inside a team''s existing GTM
-  stack, helping revenue teams ship integrated campaigns dramatically faster. It targets
-  outbound prospecting, lead nurturing, event follow-up, sales acceleration, stalled-deal
-  re-engagement, and customer expansion, and integrates with major CRM and sales tools
-  including Salesforce, HubSpot, Marketo, and Outreach. Tofu is a hosted SaaS product
-  backed by Index Ventures; it consumes third-party APIs rather than publishing a public
-  developer API, and advertises SOC 2 compliance. No public OpenAPI, SDK, MCP server,
-  or /.well-known discovery surface was found during enrichment.'
+description: 'Tofu (tofuhq.com) is an agentic go-to-market platform for B2B revenue
+  teams, running always-on marketing and sales campaigns across email, LinkedIn and
+  landing pages inside a team''s existing GTM stack. Three agents — Research, Create
+  and Launch — scale 1:1 ABM to hundreds of accounts, covering outbound prospecting,
+  lead nurture, event follow-up, sales acceleration, stalled-deal re-engagement and
+  customer expansion, and integrating with Salesforce, HubSpot, Marketo, Outreach
+  and Salesloft. Tofu also ships a public, self-serve developer product: the Enrich
+  API (api.enrich.tofuhq.com), a credit-metered company and people data API covering
+  firmographics, funding, headcount, hiring, web traffic, competitors and verified
+  business emails. It is deliberately agent-first — the documented interface is a
+  first-party CLI (@tofuhq/enrich) driven by a published Agent Skill rather than an
+  SDK, and its two schema endpoints answer unauthenticated. Backed by Index Ventures;
+  Tofu states it is SOC 2 certified.'
 url: https://raw.githubusercontent.com/api-evangelist/tofu/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -30,7 +36,7 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-21'
+modified: '2026-08-13'
 tags:
 - Company
 - Ai Ml
@@ -40,7 +46,55 @@ tags:
 - Automation
 - CRM
 - Campaigns
-apis: []
+- Data Enrichment
+- Company Data
+- People Data
+- Lead Generation
+- Agents
+- Contact Data
+apis:
+- name: Tofu Enrich API
+  description: 'Credit-metered company and people data enrichment. Two entities —
+    company (keyed on domain or LinkedIn URL) and person (keyed on LinkedIn profile
+    URL or business email) — with a structured filter grammar for search and
+    group/dotted-path field selection for enrichment. Company records cover
+    firmographics, taxonomy, headcount and growth, funding and investors, hiring,
+    web traffic, SEO, Glassdoor/G2 ratings, news, decision-makers and competitors;
+    person records cover employment history, education, skills, GitHub, social and
+    verified business email. Credits are charged per record returned, with no charge
+    when nothing matches. Authentication is a bearer API key prefixed enr_,
+    provisioned by emailed one-time code through the CLI. No OpenAPI is published,
+    but GET /v1/schema/company and GET /v1/schema/person return the complete filter
+    and field vocabulary unauthenticated.'
+  humanURL: https://enrich.tofuhq.com
+  baseURL: https://api.enrich.tofuhq.com
+  tags:
+  - Data Enrichment
+  - Company Data
+  - People Data
+  - Contact Data
+  - Lead Generation
+  properties:
+  - type: Documentation
+    url: https://enrich.tofuhq.com
+  - type: DeveloperPortal
+    url: https://enrich.tofuhq.com
+  - type: Authentication
+    url: authentication/tofu-authentication.yml
+  - type: ErrorCatalog
+    url: errors/tofu-error-codes.yml
+  - type: RateLimits
+    url: rate-limits/tofu-rate-limits.yml
+  - type: Plans
+    url: plans/tofu-plans-pricing.yml
+  - type: Conventions
+    url: conventions/tofu-conventions.yml
+  - type: DataModel
+    url: data-model/tofu-data-model.yml
+  - type: CLI
+    url: cli/tofu-cli.yml
+  - type: AgentSkill
+    url: skills/tofu-enrich.md
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -51,18 +105,24 @@ common:
   url: https://tofuhq.com
 - type: Documentation
   url: https://docs.tofuhq.com
+- type: DeveloperPortal
+  url: https://enrich.tofuhq.com
 - type: Blog
   url: https://tofuhq.com/blog
 - type: StatusPage
   url: https://status.tofuhq.com
 - type: Login
   url: https://login.tofuhq.com
+- type: SignUp
+  url: https://tofuhq.com/lp/request-a-demo
 - type: TermsOfService
   url: https://tofuhq.com/terms-and-conditions
 - type: PrivacyPolicy
   url: https://tofuhq.com/privacy-policy
 - type: Compliance
   url: https://tofuhq.com
+- type: GitHubOrganization
+  url: https://github.com/TofuHQ
 - type: Lifecycle
   url: lifecycle/tofu-lifecycle.yml
 - type: Conformance
@@ -71,8 +131,34 @@ common:
   url: security/tofu-domain-security.yml
 - type: LLMsTxt
   url: llms/tofu-llms.txt
+- type: WellKnown
+  url: well-known/tofu-well-known.yml
+- type: AgentCard
+  url: a2a/tofu-a2a.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Packages
+  url: packages/tofu-packages.yml
+- type: CLI
+  url: cli/tofu-cli.yml
+- type: Authentication
+  url: authentication/tofu-authentication.yml
+- type: OAuthScopes
+  url: scopes/tofu-scopes.yml
+- type: ErrorCatalog
+  url: errors/tofu-error-codes.yml
+- type: RateLimits
+  url: rate-limits/tofu-rate-limits.yml
+- type: Plans
+  url: plans/tofu-plans-pricing.yml
+- type: Conventions
+  url: conventions/tofu-conventions.yml
+- type: DataModel
+  url: data-model/tofu-data-model.yml
+- type: ChangeLog
+  url: changelog/tofu-changelog.yml
 x-enrichment:
-  date: '2026-07-21'
-  status: minimal
-  artifacts_added: 4
+  date: '2026-08-13'
+  status: enriched
+  artifacts_added: 21
   pass: local-v1
