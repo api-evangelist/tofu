@@ -1,0 +1,91 @@
+generated: '2026-08-13'
+method: probed
+source: live probes of api.enrich.tofuhq.com and login.tofuhq.com/.well-known/*
+docs: https://enrich.tofuhq.com
+summary:
+  types: [http, oauth2, openIdConnect]
+  api_key_in: [header]
+  http_schemes: [bearer]
+  oauth2_flows: [authorizationCode, clientCredentials, refreshToken, deviceCode]
+  openapi_available: false
+schemes:
+- name: EnrichBearerKey
+  type: http
+  scheme: bearer
+  in: header
+  header: Authorization
+  format: "Bearer enr_<key>"
+  applies_to: https://api.enrich.tofuhq.com
+  sources: [live probe of https://api.enrich.tofuhq.com/v1/billing/plans]
+  evidence: >-
+    An unauthenticated request returns HTTP 401 with
+    {"error":{"code":"unauthorized","message":"missing or malformed API key
+    (expected \"Authorization: Bearer enr_...\")"}} — the API states its own key
+    prefix and header in the error body.
+  key_prefix: enr_
+  acquisition:
+    method: emailed one-time code
+    steps:
+    - "enrich signup <email> — a 6-digit code is emailed"
+    - "enrich verify <code> — exchanges the code for a key the CLI stores"
+    note: >-
+      There is no self-serve developer console or key-management page. The key is
+      issued to and stored by the CLI (~/.config/enrich/config.json); it can be
+      overridden with the ENRICH_API_KEY environment variable.
+  unauthenticated_endpoints:
+  - GET /v1/schema/company
+  - GET /v1/schema/person
+  - GET /
+- name: TofuOIDC
+  type: openIdConnect
+  openIdConnectUrl: https://login.tofuhq.com/.well-known/openid-configuration
+  applies_to: https://login.tofuhq.com
+  issuer: https://login.tofuhq.com
+  sources: [well-known/tofu-openid-configuration.json]
+  endpoints:
+    authorization: https://login.tofuhq.com/oauth2/authorize
+    token: https://login.tofuhq.com/oauth2/token
+    userinfo: https://login.tofuhq.com/oauth2/userinfo
+    introspection: https://login.tofuhq.com/oauth2/introspection
+    device_authorization: https://login.tofuhq.com/oauth2/device_authorization
+    jwks: https://login.tofuhq.com/oauth2/jwks
+  id_token_signing_alg: [RS256]
+  subject_types: [public]
+  note: >-
+    This is the Tofu application sign-in authorization server (the surface behind
+    login.tofuhq.com / app.tofuhq.com), not the auth mechanism for the Enrich API.
+- name: TofuOAuth2
+  type: oauth2
+  applies_to: https://login.tofuhq.com
+  sources: [well-known/tofu-oauth-authorization-server.json]
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://login.tofuhq.com/oauth2/authorize
+    tokenUrl: https://login.tofuhq.com/oauth2/token
+    pkce: [S256]
+    scopes: [openid, profile, email, offline_access]
+  - flow: refreshToken
+    tokenUrl: https://login.tofuhq.com/oauth2/token
+  - flow: deviceCode
+    grant: urn:ietf:params:oauth:grant-type:device_code
+    deviceAuthorizationUrl: https://login.tofuhq.com/oauth2/device_authorization
+    tokenUrl: https://login.tofuhq.com/oauth2/token
+  - flow: clientCredentials
+    tokenUrl: https://login.tofuhq.com/oauth2/token
+    note: >-
+      Advertised in openid-configuration `grant_types_supported` but NOT in the
+      RFC 8414 oauth-authorization-server document. Recorded as-published; the
+      divergence between the two discovery documents is the provider's.
+  token_endpoint_auth_methods: [none, client_secret_basic, client_secret_post]
+  response_types: [code]
+  response_modes: [query]
+notes: >-
+  Two distinct authentication surfaces on the same domain, and they do not share a
+  mechanism. The Enrich API (api.enrich.tofuhq.com) is a bearer API key with an
+  `enr_` prefix, provisioned by email code through the CLI. The application login
+  (login.tofuhq.com) is a full OAuth 2.0 / OIDC authorization server with PKCE and
+  device-code support. Neither the OIDC issuer nor its scopes govern the Enrich
+  API; api.enrich.tofuhq.com returns 404 for
+  /.well-known/oauth-protected-resource, so the two are not linked by discovery.
+  No OpenAPI is published, so nothing here is derived from a spec — every scheme
+  was read from a live document or a live error response.

@@ -1,14 +1,44 @@
-generated: '2026-07-21'
+generated: '2026-08-13'
 method: searched
 source: https://status.tofuhq.com
 status_page: https://status.tofuhq.com
 versioning:
-  scheme: unknown
-  note: Tofu publishes no public API versioning or deprecation policy; the product is a hosted SaaS GTM platform with no documented public developer API.
+  scheme: uri-path
+  current: v1
+  base: https://api.enrich.tofuhq.com/v1
+  docs: null
+  policy_published: false
+  note: >-
+    The Enrich API versions in the URI path (/v1). No versioning policy, version
+    negotiation header, or version-support window is published.
 deprecation:
   policy_url: null
   sunset_header: false
+  deprecation_header: false
+  note: >-
+    No deprecation policy, no RFC 8594 Sunset/Deprecation header support, and no
+    announced end-of-life process for any surface.
 sla:
   url: null
+  uptime_target: null
+support:
+  channel: "`enrich feedback \"<message>\"` (free, works signed out and out of
+    credits; supports --kind bug|feature)"
+  rest: /v1/feedback
+  note: >-
+    An in-CLI feedback command is Tofu's documented support path for the Enrich
+    API. There is no developer support portal, forum, or ticketing surface.
+client_lifecycle:
+  package: "@tofuhq/enrich"
+  current: 0.7.3
+  released: '2026-07-29'
+  first_released: '2026-06-15'
+  maturity: pre-1.0
+  see: changelog/tofu-changelog.yml
 deprecated_operations: []
-notes: Only a public status page (status.tofuhq.com) was found. No public OpenAPI, versioning policy, deprecation policy, or SLA is documented as of this pass.
+notes: >-
+  Two surfaces with very different maturity. The core Tofu GTM platform has a
+  public status page at status.tofuhq.com. The Enrich API, launched mid-2026, is
+  pre-1.0 on its client and publishes no versioning policy, deprecation policy,
+  SLA or changelog. A `StatusPage` pointer is emitted; no `Deprecation` pointer is
+  emitted, because no deprecation policy exists to point at.

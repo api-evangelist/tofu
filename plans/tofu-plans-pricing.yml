@@ -1,0 +1,82 @@
+generated: '2026-08-13'
+method: searched
+source: "@tofuhq/enrich@0.7.3 GUIDE.md (published npm package) + https://enrich.tofuhq.com"
+pricing_page: null
+plan_count: 3
+currency: USD
+billing_period: month
+metering: credits
+plans:
+- name: Free
+  price: 0
+  currency: USD
+  period: month
+  included_credits: "free starter credits on signup (amount not published)"
+  overage: none — calls fail with free_tier_exhausted
+  signup: enrich signup <email>
+  limits:
+    note: Free commands (schema, identify, values, credits, usage, account, guide,
+      feedback) never consume credits.
+- name: Starter
+  price: 29
+  currency: USD
+  period: month
+  included_credits: 10000
+  overage: none — allotment resets monthly, no rollover
+  subscribe: enrich subscribe starter
+- name: Pro
+  price: 69
+  currency: USD
+  period: month
+  included_credits: 30000
+  overage: none — allotment resets monthly, no rollover
+  subscribe: enrich subscribe pro
+enterprise: null
+credit_costs:
+- operation: company get
+  credits: 2
+  unit: per record returned
+- operation: person get
+  credits: 3
+  unit: per record returned
+- operation: person get --fresh
+  credits: 5
+  unit: per record returned
+- operation: "--fields contact (person)"
+  credits: 2
+  unit: additional, charged only when a business email is actually returned
+- operation: company search
+  credits: 3
+  unit: per 100 rows
+- operation: person search
+  credits: 3
+  unit: per 100 rows
+- operation: company identify
+  credits: 0
+- operation: values
+  credits: 0
+- operation: schema
+  credits: 0
+- operation: credits / usage / account / guide / feedback
+  credits: 0
+free_credit_earning:
+  mechanism: invite
+  credits_per_invite: 200
+  bonus_on_signup: 800
+  monthly_cap: 7 invites
+  note: Invitation emails are sent from the inviting user's own address.
+billing:
+  checkout: hosted checkout link returned by `enrich subscribe <plan>`
+  self_service_portal: link returned by `enrich billing` (update card, cancel)
+  rollover: false
+  reset: monthly
+notes: >-
+  Tofu publishes no pricing PAGE — tofuhq.com/pricing returns 404 and
+  enrich.tofuhq.com carries no price list. The tiers, prices and per-operation
+  credit costs above are published verbatim in the GUIDE.md shipped inside the
+  first-party @tofuhq/enrich npm package and are also readable at runtime via
+  `enrich plans` (GET /v1/billing/plans, which requires an API key). The free tier
+  exists but its starter credit allotment is not stated in any published source, so
+  it is recorded as unquantified rather than guessed. These prices cover the Enrich
+  API only; the core Tofu GTM platform is sold sales-led ("Book A Demo") with no
+  published pricing at all.

@@ -1,0 +1,49 @@
+generated: '2026-08-13'
+method: searched
+source: https://github.com/TofuHQ/skills
+skills:
+- file: tofu-enrich.md
+  name: enrich
+  provider_published: true
+  source: https://raw.githubusercontent.com/TofuHQ/skills/main/enrich/SKILL.md
+  repository: https://github.com/TofuHQ/skills
+  install: npx -y skills add TofuHQ/skills --skill enrich -g
+  api: https://api.enrich.tofuhq.com
+  runtime: "@tofuhq/enrich CLI"
+  description: >-
+    Find and enrich companies and people — verified business emails, prospect and
+    lead lists, decision-makers at a company, firmographics (headcount, funding,
+    industry, location), and fuzzy company-name resolution. Also covers CSV
+    enrichment and GTM/ICP/TAM list building.
+  operations:
+  - company identify
+  - company get
+  - company search
+  - company schema
+  - company values
+  - person get
+  - person search
+  - person schema
+  - person values
+  - signup
+  - verify
+  - credits
+  - usage
+  - plans
+  - subscribe
+  - billing
+  - invite
+  - account
+  - feedback
+  bytes: 8565
+  verbatim: true
+summary:
+  skill_count: 1
+  provider_published: 1
+  generated: 0
+notes: >-
+  This skill is PUBLISHED BY TOFU, not authored by API Evangelist. It is saved
+  verbatim from the company's own public GitHub repository (TofuHQ/skills), which
+  Tofu names directly on enrich.tofuhq.com as the install path for its agent
+  integration. Nothing here is generated: Tofu ships no OpenAPI, so there is no
+  spec to ground an authored skill in, and none was written.

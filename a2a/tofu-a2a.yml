@@ -1,0 +1,54 @@
+generated: '2026-08-13'
+method: probed
+source: https://docs.tofuhq.com/.well-known/agent-card.json
+discovery:
+  path: /.well-known/agent-card.json
+  canonical: true
+  host: docs.tofuhq.com
+conformance:
+  spec: A2A 1.0.0
+  grade: conformant
+  protocol_version: 1.0.0
+  preferred_transport: JSONRPC
+  checks:
+    capabilities_is_object: true
+    protocol_version_present: true
+    skills_is_array: true
+    default_input_modes_present: true
+    default_output_modes_present: true
+    preferred_transport_present: true
+  deviations: []
+card:
+  name: Docs.tofuhq.com AI Agent
+  url: https://docs.tofuhq.com/a2a/v1
+  version: 1.0.0
+  skills: 1
+  skill_ids:
+  - ask
+  capabilities:
+    streaming: true
+    pushNotifications: false
+    stateTransitionHistory: true
+  provider_organization: Docs.tofuhq.com Team
+  provider_url: https://docs.tofuhq.com
+  file: tofu-agent-card.json
+x-evidence:
+  fetched: '2026-08-13'
+  url: https://docs.tofuhq.com/.well-known/agent-card.json
+  http_status: 200
+  content_type: application/json
+ownership:
+  verified: true
+  note: Served from docs.tofuhq.com, a host Tofu controls; the card's own url and
+    provider.url both resolve to docs.tofuhq.com. Not fetched from a third-party
+    domain.
+notes: >-
+  This is a documentation-assistant agent card scoped to the docs.tofuhq.com
+  knowledge base (a single "ask" skill), not an agent surface over the Tofu Enrich
+  API. It is served by the docs platform on Tofu's own host and is fully conformant
+  to A2A 1.0.0. The A2A endpoint itself (https://docs.tofuhq.com/a2a/v1) was not
+  exercised — only the card was fetched. The other hosts probed
+  (tofuhq.com, www.tofuhq.com, api.tofuhq.com, api.enrich.tofuhq.com,
+  login.tofuhq.com) returned 404 for both /.well-known/agent-card.json and the
+  legacy /.well-known/agent.json; app.tofuhq.com returns an SPA HTML shell at every
+  /.well-known/* path and was rejected as a false positive.

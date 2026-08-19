@@ -1,0 +1,115 @@
+generated: '2026-08-13'
+method: probed
+source: live GET of /.well-known/* across every Tofu host in apis.yml
+hosts:
+- host: https://docs.tofuhq.com
+  documents:
+  - path: /.well-known/agent-card.json
+    status: 200
+    content_type: application/json
+    file: ../a2a/tofu-agent-card.json
+    note: Real A2A 1.0.0 Agent Card; saved under a2a/ and indexed there.
+  - path: /.well-known/api-catalog
+    status: 200
+    content_type: application/linkset+json
+    file: tofu-api-catalog.json
+    note: >-
+      RFC 9727 linkset document is served but is EMPTY ({"linkset":[]}) — it
+      advertises zero API descriptions. Recorded as a served-but-empty document,
+      not as an API catalog.
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/html
+    note: >-
+      Not a document. The docs host is a Next.js app that answers 200 with an
+      HTML error shell for unknown paths; treated as a MISS.
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: text/html
+    note: HTML shell, not a document — MISS.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: text/html
+    note: HTML shell, not a document — MISS.
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    content_type: text/html
+    note: HTML shell, not a document — MISS.
+- host: https://login.tofuhq.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+    file: tofu-openid-configuration.json
+    note: Real OpenID Connect Discovery 1.0 document; issuer https://login.tofuhq.com.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+    file: tofu-oauth-authorization-server.json
+    note: Real RFC 8414 authorization-server metadata; PKCE S256, device code grant.
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+- host: https://api.enrich.tofuhq.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+- host: https://tofuhq.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  note: Webflow marketing site; every /.well-known/* path returns 404 "Invalid
+    .well-known request".
+- host: https://app.tofuhq.com
+  documents:
+  - path: /.well-known/*
+    status: 200
+    content_type: text/html
+    note: >-
+      SPA catch-all — every /.well-known/* path returns the same ~95KB HTML
+      application shell. All treated as MISSES, no pointer emitted.
+summary:
+  real_documents: 4
+  security_txt: false
+  openid_configuration: true
+  oauth_authorization_server: true
+  api_catalog: served-but-empty
+  agent_card: true
+notes: >-
+  No security.txt is served on any Tofu host, so no SecurityTxt pointer is
+  emitted. The WellKnown pointer is justified by four genuine documents: the A2A
+  agent card on docs.tofuhq.com and the OIDC + OAuth authorization-server
+  metadata on login.tofuhq.com.

@@ -1,0 +1,99 @@
+generated: '2026-08-13'
+method: derived
+source: "@tofuhq/enrich@0.7.3 (published npm bundle + GUIDE.md) + live probes of
+  https://api.enrich.tofuhq.com"
+api: https://api.enrich.tofuhq.com
+authentication:
+  style: bearer-api-key
+  header: Authorization
+  format: "Bearer enr_<key>"
+  see: authentication/tofu-authentication.yml
+versioning:
+  scheme: uri-path
+  current: v1
+  base: https://api.enrich.tofuhq.com/v1
+  header_negotiation: false
+  policy_published: false
+  see: lifecycle/tofu-lifecycle.yml
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    No idempotency key, header or retry-safety contract is documented anywhere —
+    not in the GUIDE, the Agent Skill, or the client bundle. Writes are limited to
+    account/billing/feedback operations. No Idempotency pointer is emitted.
+pagination:
+  style: page-through with client auto-pagination
+  applies_to: [company search, person search]
+  request_params:
+  - name: limit
+    description: Maximum rows to return.
+  - name: sort
+    description: "field:direction, e.g. employee_growth_12m:desc"
+  - name: count_only
+    description: Return the match count without rows.
+  client_flag: "--all auto-paginates the full result set"
+  page_size_billing: credits are charged per 100 rows returned
+field_selection:
+  supported: true
+  mechanism: "--fields, accepting either a group name or a dotted path"
+  examples: [funding, ratings.glassdoor.overall, contact.business_email,
+    funding.total_usd]
+  default: "a core record when --fields is omitted"
+  note: "The API fetches and returns only what is asked for — field selection is a
+    cost lever, not just a response filter."
+  see: data-model/tofu-data-model.yml
+filtering:
+  mechanism: structured predicates
+  operators: ['=', '!=', '>', '<', '>=', '<=', in, not_in, contains, starts_with,
+    near]
+  combination: repeated --where clauses AND together
+  advanced: >-
+    A JSON filter tree supports OR and nesting, e.g.
+    {"op":"or","conditions":[{"field":"country","op":"in","value":["US"]}]}.
+    Its exact shape is published at runtime under `filter_file` in
+    GET /v1/schema/{entity}.
+  value_resolution: >-
+    in/not_in match exactly, so canonical values must be resolved first via
+    /v1/values (free).
+  discovery: GET /v1/schema/{entity} returns every filterable field with its type,
+    valid operators and value source. Answers unauthenticated.
+identifier_resolution:
+  company: domain or company LinkedIn URL (auto-detected). Fuzzy names must be
+    resolved first via /v1/identify.
+  person: LinkedIn profile URL (exact match, full profile) or business email
+    (fuzzy reverse lookup returning a confidence score).
+  batch_size: 25 identifiers per request
+error_envelope:
+  shape: '{"error":{"code","message","retry_after?","details?"}}'
+  rfc9457: false
+  see: errors/tofu-error-codes.yml
+rate_limit_signaling:
+  headers: none
+  body_field: error.retry_after
+  see: rate-limits/tofu-rate-limits.yml
+metering:
+  model: credits, charged per record returned
+  no_result_no_charge: true
+  response_headers: [x-credits-charged, x-credits-remaining]
+  see: plans/tofu-plans-pricing.yml
+request_tracing:
+  provider_header: null
+  edge_headers: [x-railway-request-id, x-hikari-trace, x-railway-edge]
+  note: >-
+    Tracing identifiers observed on responses come from the Railway edge the API
+    is hosted behind, not from a Tofu-defined request-id convention. They are
+    recorded as observed infrastructure headers, not as a supported contract.
+client_headers:
+- header: x-enrich-cli
+  description: CLI version, sent by the first-party client on every request.
+content_type: application/json
+output_formats: [json, ndjson]
+notes: >-
+  Tofu publishes no API reference, so these conventions are derived from the
+  first-party published CLI (its bundle and its shipped GUIDE.md) and confirmed
+  against live unauthenticated responses where possible. The two free schema
+  endpoints are unusually good agent affordances: GET /v1/schema/company and
+  GET /v1/schema/person return the complete filter and field vocabulary,
+  unauthenticated, which is the closest thing Tofu ships to a machine-readable
+  contract.

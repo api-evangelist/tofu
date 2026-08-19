@@ -1,0 +1,47 @@
+generated: '2026-08-13'
+method: derived
+source: https://registry.npmjs.org/@tofuhq/enrich
+changelog_page: null
+scheme: semver
+current_version: 0.7.3
+current_version_date: '2026-07-29'
+first_release: '2026-06-15'
+release_count: 12
+applies_to: "@tofuhq/enrich CLI (the client for https://api.enrich.tofuhq.com)"
+entries:
+- version: 0.7.3
+  date: '2026-07-29'
+- version: 0.7.2
+  date: '2026-06-24'
+- version: 0.7.1
+  date: '2026-06-23'
+- version: 0.7.0
+  date: '2026-06-22'
+- version: 0.6.2
+  date: '2026-06-17'
+- version: 0.6.1
+  date: '2026-06-17'
+- version: 0.6.0
+  date: '2026-06-17'
+- version: 0.5.0
+  date: '2026-06-17'
+- version: 0.4.0
+  date: '2026-06-17'
+- version: 0.3.0
+  date: '2026-06-16'
+- version: 0.2.0
+  date: '2026-06-15'
+- version: 0.1.0
+  date: '2026-06-15'
+cadence:
+  note: >-
+    Eleven releases in the nine days from 2026-06-15 to 2026-06-24, then a single
+    release on 2026-07-29. Pre-1.0 throughout.
+notes: >-
+  Tofu publishes NO narrative changelog or release-notes page — not on
+  enrich.tofuhq.com, not on tofuhq.com, and not in the GitHub skills repo. This
+  file is derived from npm registry release timestamps for the first-party CLI,
+  which is provider-published dated release data but carries no descriptions of
+  what changed in each version. The API itself (v1) has no published version
+  history at all. Recorded as `derived` for that reason — do not read it as a
+  provider-maintained changelog.

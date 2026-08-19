@@ -1,0 +1,51 @@
+generated: '2026-08-13'
+method: derived
+source: "@tofuhq/enrich@0.7.3 dist/index.js (published npm bundle) + live response
+  headers from https://api.enrich.tofuhq.com/v1/schema/company"
+api: https://api.enrich.tofuhq.com
+limit_count: 0
+rate_limits: []
+response_headers:
+- header: x-credits-charged
+  description: Credits consumed by this request. Read by the CLI off every response.
+  observed: read by the client bundle; not present on free/unauthenticated endpoints
+- header: x-credits-remaining
+  description: Remaining credit balance after this request.
+  observed: read by the client bundle; not present on free/unauthenticated endpoints
+- header: x-enrich-notice
+  description: Out-of-band notice string surfaced to the caller.
+  observed: read by the client bundle
+- header: Retry-After
+  description: NOT used. The retry hint is carried in the JSON body instead.
+  present: false
+body_signals:
+- field: error.retry_after
+  description: >-
+    Seconds to wait before retrying, carried inside the error envelope rather than
+    in an HTTP header. This is the only backoff signal the API emits.
+  applies_to_codes: [rate_limited, provider_rate_limited, provider_unavailable]
+exhaustion:
+  rate_limit_codes: [rate_limited, provider_rate_limited, provider_unavailable]
+  rate_limit_status: 429 (503 for provider_unavailable)
+  cli_exit_code: 3
+  quota_codes: [budget_exhausted, free_tier_exhausted]
+  quota_cli_exit_code: 4
+  note: >-
+    Tofu separates rate limiting from quota exhaustion. Quota is metered in
+    CREDITS, not requests — see plans/tofu-plans-pricing.yml for per-operation
+    credit costs. Credits are only charged for records actually returned.
+batch_limits:
+- operation: company get
+  limit: 25 identifiers per request
+- operation: person get
+  limit: 25 identifiers per request
+- operation: company search / person search
+  limit: paginated; 100 rows per credit-charged page, `--all` auto-paginates
+notes: >-
+  No numeric rate limit is published anywhere — not on enrich.tofuhq.com, not in
+  the shipped GUIDE.md, and not in the published Agent Skill. limit_count is 0 as
+  an honest zero. What Tofu DOES ship is the runtime signal: a distinct
+  `rate_limited` error code, a `retry_after` value in the error body, and
+  per-request credit accounting on `x-credits-charged` / `x-credits-remaining`
+  headers. The unauthenticated /v1/schema/company response carried no
+  X-RateLimit-* or RateLimit-* headers of any kind.

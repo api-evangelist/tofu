@@ -42,6 +42,17 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Tofu is a company surfaced as a portfolio company of index-ventures and added to the API Evangelist network as a stub for enrichment. Sector: ai-ml. This profile is a lead awaiting the enrichment pipeline.
+Tofu is an agentic go-to-market platform for B2B revenue teams, running always-on
+campaigns across email, LinkedIn and landing pages inside a team's existing GTM stack.
+Sector: ai-ml.
+
+Alongside the GTM platform, Tofu ships a public, self-serve developer product: the
+**Tofu Enrich API** (`https://api.enrich.tofuhq.com`) — credit-metered company and
+people data enrichment covering firmographics, funding, headcount, hiring, web
+traffic, competitors and verified business emails. It is deliberately agent-first:
+the documented interface is a first-party CLI (`@tofuhq/enrich`) driven by an Agent
+Skill Tofu publishes at [TofuHQ/skills](https://github.com/TofuHQ/skills), rather than
+a conventional SDK. No OpenAPI is published, but `GET /v1/schema/company` and
+`GET /v1/schema/person` return the full filter and field vocabulary unauthenticated.
 
 Backed by: index-ventures — http://tofuhq.com

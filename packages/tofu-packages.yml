@@ -1,0 +1,57 @@
+generated: '2026-08-13'
+method: searched
+source: https://registry.npmjs.org/@tofuhq/enrich
+packages:
+- language: javascript
+  registry: npm
+  name: "@tofuhq/enrich"
+  url: https://www.npmjs.com/package/@tofuhq/enrich
+  install: npm install -g @tofuhq/enrich
+  run_without_install: npx -y @tofuhq/enrich@latest <cmd>
+  official: true
+  kind: cli
+  version: 0.7.3
+  published: '2026-07-29'
+  first_published: '2026-06-15'
+  release_count: 12
+  license: MIT
+  runtime_dependencies: 0
+  binary: enrich
+  api: https://api.enrich.tofuhq.com
+  note: >-
+    First-party Tofu CLI for the Enrich API. Ownership is established two ways:
+    the npm scope @tofuhq matches tofuhq.com, and the bundled binary's
+    DEFAULT_BASE_URL is https://api.enrich.tofuhq.com — a host on Tofu's own
+    domain whose root returns {"name":"enrich","docs":"https://enrich.tofuhq.com"}.
+    This ships as a CLI (package.json declares only `bin`, no `main`), so it is
+    NOT counted as a client SDK/library; its command surface is captured in
+    cli/tofu-cli.yml.
+registries_checked:
+- registry: npm
+  query: scope:tofuhq
+  result: 1 package (@tofuhq/enrich)
+- registry: pypi
+  queries: [tofuhq, tofu-sdk]
+  result: 404 — no first-party package. (PyPI `tofu` 1.8.18 is "TOmography for
+    FUsion toolkit", an unrelated project, and is NOT recorded here.)
+- registry: rubygems
+  result: none found
+- registry: crates.io
+  result: none found
+- registry: nuget
+  result: none found
+- registry: maven-central
+  result: none found
+- registry: pkg.go.dev
+  result: none found
+summary:
+  official_packages: 1
+  official_sdk_libraries: 0
+  official_clis: 1
+  languages: [javascript]
+notes: >-
+  Tofu publishes no server-side client SDK in any language. The only first-party
+  distributable is the `enrich` CLI, which is deliberately positioned as an
+  agent-driven interface ("built to be driven by an agent") rather than a library.
+  No `SDKs` pointer is emitted, because emitting one for a CLI-only distribution
+  would credit Tofu with client libraries it does not ship.

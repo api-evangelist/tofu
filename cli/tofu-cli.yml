@@ -1,0 +1,170 @@
+generated: '2026-08-13'
+method: searched
+source: https://enrich.tofuhq.com
+sources:
+- https://enrich.tofuhq.com
+- https://www.npmjs.com/package/@tofuhq/enrich
+- https://github.com/TofuHQ/skills/blob/main/enrich/SKILL.md
+name: enrich
+binary: enrich
+package: "@tofuhq/enrich"
+version: 0.7.3
+api: https://api.enrich.tofuhq.com
+docs: https://enrich.tofuhq.com
+install:
+- method: npm-global
+  command: npm install -g @tofuhq/enrich
+- method: npx
+  command: npx -y @tofuhq/enrich@latest <cmd>
+- method: agent-skill
+  command: npx -y skills add TofuHQ/skills --skill enrich -g
+  note: Installs the provider-published Agent Skill that drives this CLI.
+configuration:
+  config_file: ~/.config/enrich/config.json
+  env:
+  - name: ENRICH_API_KEY
+    description: Overrides the stored API key (keys are prefixed `enr_`).
+  - name: ENRICH_BASE_URL
+    description: Overrides the API base URL (default https://api.enrich.tofuhq.com).
+  note: >-
+    Normal use has no key to copy or manage — `enrich signup <email>` emails a
+    6-digit code, `enrich verify <code>` exchanges it, and the CLI stores the key
+    itself.
+global_flags:
+- flag: "--pretty"
+  description: Pretty-print JSON output. Must precede the subcommand.
+- flag: "--ndjson"
+  description: Newline-delimited JSON output. Must precede the subcommand.
+command_groups:
+- group: entity
+  description: "Everything entity-specific is `enrich <entity> <verb>` where entity
+    is company | person."
+  commands:
+  - command: company get <ids...>
+    description: Enrich companies by domain or company LinkedIn URL (auto-detected).
+    rest: POST /v1/company/enrich
+    cost_credits: 2
+    flags: ["--fields", "--input <csv>", "--column <name>", "--out", "--fresh"]
+    batch: 25 identifiers per request
+  - command: person get <ids...>
+    description: Enrich people by LinkedIn profile URL or business email
+      (auto-detected; email is a fuzzy reverse lookup returning a confidence score).
+    rest: POST /v1/person/enrich
+    cost_credits: 3
+    cost_note: "--fresh costs 5; `--fields contact` adds +2, charged only when a
+      business email is actually returned."
+    flags: ["--fields", "--input <csv>", "--column <name>", "--out", "--fresh"]
+    batch: 25 identifiers per request
+  - command: company search
+    description: Find companies by criteria.
+    rest: POST /v1/company/search
+    cost_credits: 3 per 100 rows
+    flags: ["--where", "--filter-file", "--all", "--limit", "--sort",
+      "--count-only", "--fields"]
+  - command: person search
+    description: Find people by criteria.
+    rest: POST /v1/person/search
+    cost_credits: 3 per 100 rows
+    flags: ["--where", "--filter-file", "--all", "--limit", "--sort",
+      "--count-only", "--fields"]
+  - command: company identify <query>
+    description: Resolve a fuzzy company name/URL to candidate matches. Company-only.
+    rest: /v1/identify
+    cost_credits: 0
+  - command: "<entity> values <field> [q]"
+    description: Resolve canonical values for a filter field.
+    rest: /v1/values
+    cost_credits: 0
+  - command: "<entity> schema [filters|fields]"
+    description: Field and filter reference for the entity.
+    rest: GET /v1/schema/{entity}
+    cost_credits: 0
+    note: This endpoint answers unauthenticated — see data-model/.
+- group: account
+  commands:
+  - command: signup <email>
+    rest: /v1/signup
+    description: Create an account; emails a 6-digit verification code.
+    cost_credits: 0
+  - command: verify <code>
+    rest: /v1/verify
+    description: Exchange the emailed code for a session/API key.
+    cost_credits: 0
+  - command: account
+    description: Show signed-in status.
+    cost_credits: 0
+  - command: credits
+    rest: /v1/credits
+    description: Plan, balance and renewal.
+    cost_credits: 0
+  - command: usage
+    rest: /v1/usage
+    description: Recent activity.
+    cost_credits: 0
+  - command: invite <emails...>
+    rest: /v1/invite
+    description: Invite people to earn free credits (200 each, +800 on signup,
+      max 7/month). Sent from the user's own address.
+    cost_credits: 0
+- group: billing
+  commands:
+  - command: plans
+    rest: GET /v1/billing/plans
+    description: List subscription tiers and the current plan.
+  - command: subscribe <plan>
+    rest: /v1/billing/checkout
+    description: Returns a hosted checkout link for `starter` or `pro`.
+  - command: billing
+    rest: /v1/billing/portal
+    description: Returns a billing-portal link to update the card or cancel.
+- group: meta
+  commands:
+  - command: guide
+    description: Prints the full agent playbook (shipped as GUIDE.md in the package).
+    cost_credits: 0
+  - command: feedback <message>
+    rest: /v1/feedback
+    description: Report a bug or request a feature. Free, works signed out and out
+      of credits. Supports --kind bug|feature.
+    cost_credits: 0
+exit_codes:
+- code: 0
+  meaning: ok
+- code: 1
+  meaning: usage / bad request
+- code: 2
+  meaning: auth
+- code: 3
+  meaning: rate limited
+- code: 4
+  meaning: out of credits
+- code: 5
+  meaning: not found
+- code: 6
+  meaning: partial batch
+- code: 7
+  meaning: server error
+key_flows:
+- name: Resolve then enrich
+  steps:
+  - enrich company identify "Acme Inc"
+  - enrich company get acme.com --fields ratings,funding,headcount
+- name: Build a prospect list
+  steps:
+  - enrich company search --where 'country in US' --where 'employees > 1000' --sort
+      employees:desc --fields funding
+  - enrich person search --where 'title contains engineer' --fields current_company
+- name: Batch-enrich a CSV
+  steps:
+  - enrich company get --input leads.csv --column website --fields
+      employees,funding.total_usd
+  note: Appends a column per --fields path; re-run to fill rows left `pending`.
+output:
+  stdout: JSON (or NDJSON with --ndjson)
+  stderr: progress and warnings, plus structured errors
+notes: >-
+  The CLI is the primary documented interface to the Enrich API — Tofu publishes
+  no OpenAPI and no REST reference page. Endpoint paths recorded above were read
+  from the published npm bundle (dist/index.js) and confirmed live where they are
+  unauthenticated; they are recorded as the CLI's own request targets, not as a
+  provider-published API reference.

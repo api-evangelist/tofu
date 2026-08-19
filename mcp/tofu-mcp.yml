@@ -1,0 +1,46 @@
+generated: '2026-08-13'
+method: none
+status: none
+source: live probes of api.enrich.tofuhq.com, docs.tofuhq.com, tofuhq.com and the
+  published @tofuhq/enrich package
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: probed
+server: null
+tools: []
+probes:
+- url: https://api.enrich.tofuhq.com/mcp
+  status: 404
+- url: https://api.enrich.tofuhq.com/v1/mcp
+  status: 401
+  note: >-
+    NOT evidence of an MCP endpoint. A control probe of
+    /v1/definitely-not-a-real-endpoint-xyz and /v1/zzz/qqq returned the same 401
+    with the same body, so the API's auth middleware answers 401 for EVERY unknown
+    path under /v1. Treated as a miss.
+- url: https://docs.tofuhq.com/.well-known/api-catalog
+  status: 200
+  note: Empty linkset — advertises no MCP endpoint.
+searches:
+- target: npm scope @tofuhq
+  result: one package (@tofuhq/enrich), a CLI. No MCP server package.
+- target: "@modelcontextprotocol registry / npm search"
+  result: no Tofu MCP server found.
+- target: https://enrich.tofuhq.com
+  result: >-
+    Tofu's agent integration is explicitly a CLI-plus-Agent-Skill, not MCP. The
+    documented install is `npx -y skills add TofuHQ/skills --skill enrich -g`.
+- target: github.com/TofuHQ/skills
+  result: contains only enrich/SKILL.md and LICENSE — no MCP server.
+notes: >-
+  Tofu ships NO MCP server, remote or local. This is a deliberate product choice
+  rather than a gap: the company built its agent surface as a published Agent
+  Skill wrapping a first-party CLI (see skills/ and cli/), which reaches agents
+  without an MCP transport. No `MCPServer` pointer is emitted in apis.yml, and no
+  candidate tool list was derived — there is no OpenAPI to derive one from, and a
+  fabricated endpoint would read as a verified agent surface. This file exists to
+  record the probed absence.

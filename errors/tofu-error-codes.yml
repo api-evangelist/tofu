@@ -1,0 +1,100 @@
+generated: '2026-08-13'
+method: derived
+source: "@tofuhq/enrich@0.7.3 dist/index.js (published npm bundle) + live 401 from
+  https://api.enrich.tofuhq.com/v1/billing/plans"
+format: custom-envelope
+rfc9457: false
+api: https://api.enrich.tofuhq.com
+envelope:
+  shape: '{"error": {"code": "<string>", "message": "<string>", "retry_after":
+    <seconds|absent>, "details": <object|absent>}}'
+  content_type: application/json
+  fields:
+  - name: error.code
+    description: Machine-readable error identifier. Stable across the API.
+  - name: error.message
+    description: Human-readable explanation.
+  - name: error.retry_after
+    description: Seconds to wait before retrying. Present on rate-limit errors.
+  - name: error.details
+    description: Optional structured context.
+  note: >-
+    Not RFC 9457 — the response is application/json with a nested `error` object,
+    not application/problem+json with type/title/status/detail.
+errors:
+- code: bad_request
+  status: 400
+  cli_exit: 1
+  meaning: Malformed request, unknown filter/field, or invalid operator.
+  action: Fix the request. Use GET /v1/schema/{entity} to confirm valid fields,
+    filters and operators.
+- code: unauthorized
+  status: 401
+  cli_exit: 2
+  meaning: Missing or malformed API key.
+  observed_message: >-
+    missing or malformed API key (expected "Authorization: Bearer enr_...")
+  action: >-
+    Send the header `Authorization: Bearer enr_<key>`. Obtain a key via
+    signup/verify.
+  verified: live
+- code: key_disabled
+  status: 401
+  cli_exit: 2
+  meaning: The API key exists but has been disabled.
+  action: Re-authenticate; the key cannot be re-enabled by retrying.
+- code: rate_limited
+  status: 429
+  cli_exit: 3
+  meaning: Client exceeded the request rate.
+  action: Honour `error.retry_after` (seconds) before retrying.
+- code: provider_rate_limited
+  status: 429
+  cli_exit: 3
+  meaning: An upstream data provider rate-limited the request.
+  action: Retry after a backoff; this is transient and not caused by the caller's
+    own request rate.
+- code: provider_unavailable
+  status: 503
+  cli_exit: 3
+  meaning: An upstream data provider is unavailable.
+  action: Retry with backoff.
+- code: budget_exhausted
+  status: 402
+  cli_exit: 4
+  meaning: The account's credit balance is spent.
+  action: Surface both remedies to the user — earn credits with `invite`, or
+    subscribe to a paid plan. Do not retry.
+- code: free_tier_exhausted
+  status: 402
+  cli_exit: 4
+  meaning: The free starter credits are spent.
+  action: Same as budget_exhausted. Do not retry.
+- code: not_found
+  status: 404
+  cli_exit: 5
+  meaning: No record matched the identifier.
+  action: Resolve the identifier first (`company identify`), or accept the miss —
+    no credits are charged when nothing is returned.
+- code: upgrade_required
+  status: 402
+  cli_exit: 7
+  meaning: The requested capability requires a higher plan.
+  action: Subscribe to a plan that includes the capability.
+- code: provider_error
+  status: 5xx
+  cli_exit: 7
+  meaning: Server-side failure, or a non-JSON response from the API.
+  action: Retry with backoff; report persistent failures via `enrich feedback`.
+summary:
+  error_count: 11
+  status_codes_observed: [200, 401, 404]
+  retry_signal: error.retry_after (seconds, in the response body)
+notes: >-
+  Tofu publishes no error reference page. This catalog is derived from the
+  first-party `@tofuhq/enrich` npm bundle, which ships an explicit EXIT_CODE map
+  binding every error code to a CLI exit status, and from the one error envelope
+  observed live (unauthorized). HTTP status codes for codes other than
+  `unauthorized` and `not_found` are the conventional mapping implied by the code
+  names and the CLI's handling; they were NOT observed on the wire and are marked
+  as such by the absence of `verified: live`.

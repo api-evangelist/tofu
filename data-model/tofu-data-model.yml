@@ -1,0 +1,170 @@
+generated: '2026-08-13'
+method: probed
+source: https://api.enrich.tofuhq.com/v1/schema/company
+also_source: https://api.enrich.tofuhq.com/v1/schema/person
+verbatim_documents:
+- tofu-enrich-company-schema.json
+- tofu-enrich-person-schema.json
+api: https://api.enrich.tofuhq.com
+note_on_provenance: >-
+  Tofu publishes no OpenAPI. These two endpoints answer UNAUTHENTICATED with the
+  complete filter and field vocabulary for each entity, so this model is read
+  directly off the live API rather than inferred. The raw responses are saved
+  verbatim alongside this file.
+entities:
+- name: company
+  identifiers:
+  - field: domain
+    description: Primary web domain — the canonical company key.
+    primary: true
+  - field: linkedin_url
+    description: Company LinkedIn URL.
+  resolution: >-
+    Fuzzy names are not accepted by `get`; they must first be resolved to a domain
+    via /v1/identify.
+  filters: 14
+  filter_fields:
+  - {field: name, type: string, ops: ['=', '!=', in, not_in, contains, starts_with]}
+  - {field: domain, type: string, ops: ['=', in]}
+  - {field: linkedin_url, type: string, ops: ['=']}
+  - {field: country, type: enum, ops: ['=', '!=', in, not_in], values: ISO-3166
+      alpha-2 or name}
+  - {field: region, type: string, ops: ['=', contains]}
+  - {field: employees, type: number, ops: ['=', '!=', '>', '<', '>=', '<=']}
+  - {field: employee_growth_6m, type: number}
+  - {field: employee_growth_12m, type: number}
+  - {field: founded_year, type: number}
+  - {field: industry, type: enum}
+  - {field: type, type: enum}
+  - {field: funding_total, type: number}
+  - {field: last_funding_type, type: enum}
+  - {field: last_funding_date, type: date}
+  fields: 26
+  field_groups:
+  - {group: website, description: full website URL}
+  - {group: location, description: country, state, city, HQ address,
+      largest-headcount country}
+  - {group: offices, description: all office addresses}
+  - {group: founded_year, description: year founded}
+  - {group: fiscal_year_end, description: fiscal year end month}
+  - {group: type, description: public / private / nonprofit}
+  - {group: employees_range, description: headcount band}
+  - {group: ipo_date, description: IPO date}
+  - {group: acquisition_status, description: acquired status}
+  - {group: description, description: company description}
+  - {group: revenue, description: estimated revenue range (USD)}
+  - {group: markets, description: public markets}
+  - {group: tickers, description: stock tickers}
+  - {group: industry, description: primary industry}
+  - {group: taxonomy, description: industries, specialties, categories, NAICS, SIC}
+  - {group: employees, description: current employee count}
+  - {group: headcount, description: employee count + growth (mom/qoq/6m/12m/2y)}
+  - {group: social, description: LinkedIn followers + growth}
+  - {group: ratings, description: Glassdoor + G2 ratings, nested paths e.g.
+      ratings.glassdoor.overall}
+  - {group: web_traffic, description: monthly visitors, growth, traffic-source mix}
+  - {group: funding, description: total raised, last round, investors, rounds,
+      acquisitions; nested paths e.g. funding.total_usd, funding.investors}
+  - {group: hiring, description: open job count, growth, recent postings}
+  - {group: seo, description: organic/paid clicks, ad budget, ad rank}
+  - {group: people, description: decision-makers and CXOs (capped)}
+  - {group: news, description: recent press articles (capped)}
+  - {group: competitors, description: competitor domains (direct + SEO)}
+- name: person
+  identifiers:
+  - field: linkedin_url
+    description: LinkedIn profile URL — exact match, returns the full profile.
+    primary: true
+  - field: business_email
+    description: Reverse lookup. Fuzzy; the result carries a confidence `score` and
+      a deliverability status.
+  filters: 16
+  filter_fields:
+  - {field: name, type: string}
+  - {field: first_name, type: string, note: search only}
+  - {field: last_name, type: string, note: search only}
+  - {field: headline, type: string}
+  - {field: title, type: string}
+  - {field: seniority, type: enum}
+  - {field: function, type: enum}
+  - {field: current_company, type: string}
+  - {field: current_company_domain, type: string}
+  - {field: current_company_linkedin, type: string}
+  - {field: skills, type: string}
+  - {field: location, type: string}
+  - {field: country, type: enum}
+  - {field: years_experience, type: number}
+  - {field: company_size, type: enum}
+  - {field: company_industry, type: enum}
+  fields: 18
+  field_groups:
+  - {group: first_name}
+  - {group: last_name}
+  - {group: headline, description: LinkedIn headline}
+  - {group: title, description: current job title}
+  - {group: location}
+  - {group: photo, description: profile picture URL}
+  - {group: twitter, description: Twitter handle}
+  - {group: current_company, description: current employer (name, domain, title)}
+  - {group: summary, description: profile summary}
+  - {group: experience, description: full employment history (current + past)}
+  - {group: education, description: schools and degrees}
+  - {group: skills}
+  - {group: languages}
+  - {group: certifications}
+  - {group: honors, description: honors and awards}
+  - {group: github, description: matched GitHub profiles}
+  - {group: social, description: connections, followers}
+  - {group: contact, description: business email; nested path
+      contact.business_email; costs +2 credits when returned}
+relationships:
+- from: person
+  to: company
+  kind: belongs_to
+  via: current_company_domain
+  description: >-
+    A person's current employer is carried both as a filterable key
+    (current_company_domain / current_company_linkedin) and as a returned field
+    group (current_company). The domain is the join key into the company entity.
+  confidence: high
+- from: person
+  to: company
+  kind: has_many
+  via: experience
+  description: Full employment history — past employers, each nameable but not
+    guaranteed to carry a resolvable company domain.
+  confidence: medium
+- from: company
+  to: person
+  kind: has_many
+  via: people
+  description: Decision-makers and CXOs attached to a company record (capped).
+  confidence: high
+- from: company
+  to: company
+  kind: has_many
+  via: competitors
+  description: Competitor domains (direct + SEO), expressed as domains that resolve
+    back into the company entity.
+  confidence: high
+- from: company
+  to: company
+  kind: has_many
+  via: funding.investors
+  description: Investor names on funding rounds. Names only — not guaranteed to
+    resolve to a company domain.
+  confidence: low
+join_keys:
+  company: domain
+  person: linkedin_url
+summary:
+  entities: 2
+  total_filter_fields: 30
+  total_field_groups: 44
+  relationships: 5
+notes: >-
+  A two-entity model — company and person — joined on the company domain. Every
+  field and filter above is published by the live API at
+  /v1/schema/{entity}; nothing here is inferred from prose. Note that field
+  selection is billed: requesting `contact` on a person adds 2 credits when an
+  email is actually returned, so the field graph doubles as a cost model.

@@ -1,14 +1,110 @@
-generated: '2026-07-21'
-method: searched
-source: https://tofuhq.com
+generated: '2026-08-13'
+method: probed
+source: live probes of api.enrich.tofuhq.com, login.tofuhq.com and docs.tofuhq.com
 standards:
-- id: soc2
-  conforms: true
-  evidence: SOC 2 / AICPA SOC compliance badge displayed on the tofuhq.com homepage.
 - id: oauth2
+  conforms: true
+  evidence: >-
+    RFC 8414 authorization-server metadata served at
+    https://login.tofuhq.com/.well-known/oauth-authorization-server —
+    authorization_code, refresh_token and device_code grants, response_type code.
+  artifact: well-known/tofu-oauth-authorization-server.json
+- id: oauth2-pkce
+  conforms: true
+  evidence: code_challenge_methods_supported = ["S256"] in the authorization-server
+    metadata.
+- id: rfc8628-device-authorization-grant
+  conforms: true
+  evidence: >-
+    device_authorization_endpoint published and
+    urn:ietf:params:oauth:grant-type:device_code listed in grant_types_supported.
+- id: oidc-discovery
+  conforms: true
+  evidence: >-
+    OpenID Connect Discovery 1.0 document at
+    https://login.tofuhq.com/.well-known/openid-configuration — issuer, jwks_uri,
+    userinfo_endpoint, RS256 id_token signing.
+  artifact: well-known/tofu-openid-configuration.json
+- id: rfc8414-authorization-server-metadata
+  conforms: true
+  evidence: Served and well-formed at login.tofuhq.com.
+- id: a2a-1.0.0
+  conforms: true
+  grade: conformant
+  evidence: >-
+    Agent Card at https://docs.tofuhq.com/.well-known/agent-card.json —
+    capabilities is an object, protocolVersion 1.0.0 present, skills is an array,
+    preferredTransport and default input/output modes all present.
+  artifact: a2a/tofu-a2a.yml
+- id: rfc8615-well-known-uris
+  conforms: true
+  evidence: Real documents served under /.well-known/ on login.tofuhq.com and
+    docs.tofuhq.com.
+  artifact: well-known/tofu-well-known.yml
+- id: rfc9727-api-catalog
+  conforms: partial
+  evidence: >-
+    docs.tofuhq.com/.well-known/api-catalog returns a valid
+    application/linkset+json document, but the linkset is EMPTY — the surface is
+    served and advertises nothing.
+- id: openapi
   conforms: false
-  evidence: No public OpenAPI or documented OAuth surface found.
+  evidence: >-
+    No OpenAPI or Swagger document found on any host. Probed /openapi.json,
+    /openapi.yaml, /swagger.json, /v1/openapi.json, /api-docs, /docs and /redoc
+    against tofuhq.com, www.tofuhq.com, docs.tofuhq.com, api.tofuhq.com,
+    app.tofuhq.com, login.tofuhq.com and api.enrich.tofuhq.com. Every result was a
+    404 or an HTML application shell.
 - id: rfc9457-problem-details
   conforms: false
-  evidence: No public API specification available to assess error formatting.
-notes: Tofu is an agentic go-to-market (GTM) SaaS platform. No public developer API specification was found; conformance is limited to the published SOC 2 compliance posture surfaced on the homepage.
+  evidence: >-
+    The Enrich API returns application/json with a nested
+    {"error":{"code","message"}} envelope, not application/problem+json with
+    type/title/status/detail.
+  artifact: errors/tofu-error-codes.yml
+- id: rfc9110-retry-after
+  conforms: false
+  evidence: >-
+    The retry hint is carried as error.retry_after inside the JSON body rather
+    than in a Retry-After header.
+  artifact: rate-limits/tofu-rate-limits.yml
+- id: ratelimit-headers
+  conforms: false
+  evidence: No X-RateLimit-* or RateLimit-* headers on any observed response.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on every Tofu host.
+- id: asyncapi
+  conforms: false
+  evidence: No event, streaming or webhook surface published; no AsyncAPI document
+    found.
+- id: mcp
+  conforms: false
+  evidence: >-
+    No MCP server, remote or local. Tofu's agent surface is a published Agent
+    Skill wrapping a CLI. See mcp/tofu-mcp.yml for the probed absence.
+- id: graphql
+  conforms: false
+  evidence: No /graphql surface found on any host.
+- id: soc2
+  conforms: claimed
+  evidence: >-
+    "SOC 2 certified." is stated by Tofu in its own published llms.txt at
+    https://docs.tofuhq.com/llms.txt. No trust centre, audit report, or compliance
+    page backs the claim — tofuhq.com/security, /trust and /compliance all return
+    404, and an automated trust-centre probe found nothing.
+  verified: false
+summary:
+  conformant: 6
+  partial: 1
+  claimed_unverified: 1
+  not_conformant: 8
+notes: >-
+  Tofu's standards posture is split cleanly by surface. Its identity layer
+  (login.tofuhq.com) is genuinely standards-conformant — OAuth 2.0 with PKCE,
+  RFC 8414 metadata, OIDC discovery and RFC 8628 device authorization, all
+  discoverable anonymously. Its A2A agent card is one of the ~15% of published
+  cards that actually grade conformant. Its data API (api.enrich.tofuhq.com) is
+  not: no OpenAPI, a bespoke error envelope, no standard rate-limit signalling.
+  The SOC 2 claim is recorded as claimed-not-verified because the only source is
+  Tofu's own llms.txt.

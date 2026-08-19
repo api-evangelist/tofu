@@ -1,0 +1,52 @@
+generated: '2026-08-13'
+method: probed
+source: https://login.tofuhq.com/.well-known/openid-configuration
+also_source: https://login.tofuhq.com/.well-known/oauth-authorization-server
+docs: null
+schemes:
+- name: TofuOAuth2
+  source: well-known/tofu-oauth-authorization-server.json
+  issuer: https://login.tofuhq.com
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://login.tofuhq.com/oauth2/authorize
+    tokenUrl: https://login.tofuhq.com/oauth2/token
+    code_challenge_methods: [S256]
+  - flow: deviceCode
+    deviceAuthorizationUrl: https://login.tofuhq.com/oauth2/device_authorization
+    tokenUrl: https://login.tofuhq.com/oauth2/token
+  - flow: refreshToken
+    tokenUrl: https://login.tofuhq.com/oauth2/token
+scopes:
+- scope: openid
+  description: Standard OIDC scope requesting an ID token.
+  flows: [authorizationCode, deviceCode]
+  sources: [well-known/tofu-openid-configuration.json,
+    well-known/tofu-oauth-authorization-server.json]
+- scope: profile
+  description: Standard OIDC claim set covering basic profile attributes.
+  flows: [authorizationCode, deviceCode]
+  sources: [well-known/tofu-openid-configuration.json,
+    well-known/tofu-oauth-authorization-server.json]
+- scope: email
+  description: Standard OIDC claim set covering the user's email address.
+  flows: [authorizationCode, deviceCode]
+  sources: [well-known/tofu-openid-configuration.json,
+    well-known/tofu-oauth-authorization-server.json]
+- scope: offline_access
+  description: Requests a refresh token for long-lived access.
+  flows: [authorizationCode, deviceCode]
+  sources: [well-known/tofu-openid-configuration.json,
+    well-known/tofu-oauth-authorization-server.json]
+summary:
+  scope_count: 4
+  custom_scopes: 0
+  standard_oidc_scopes: 4
+notes: >-
+  Every scope Tofu advertises is a standard OIDC scope — there are no
+  product/resource scopes (no read/write, no per-object permissions). This
+  authorization server governs application sign-in at login.tofuhq.com only. The
+  Enrich API at api.enrich.tofuhq.com uses an opaque bearer API key with no scope
+  surface at all, so no scope model applies to it. Tofu publishes no scopes or
+  permissions reference page; these values were read directly from the two
+  discovery documents.
