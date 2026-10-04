@@ -1,24 +1,22 @@
-# Kin Score artifact — tofu — 2026-09-01T222808
+# Kin Score artifact — tofu — 2026-09-25T232841
 # The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
 ---
 kin_score:
   slug: tofu
-  schema_version: 0.18.0
-  scored_at: '2026-09-01'
-  run_ts: 2026-09-01T222808
-  composite: 38.5
-  band: thin
+  schema_version: 0.23.0
+  scored_at: '2026-09-25'
+  run_ts: 2026-09-25T232841
+  composite: 41.8
+  band: developing
   facets:
-    discoverability: 75.9
+    discoverability: 73.2
     contract_quality: 0.0
-    governance: 18.2
+    contract_governance: 18.2
     operational_transparency: 34.2
     developer_ergonomics: 47.6
-    commercial_clarity: 73.7
-    contract_governance: 18.2
     access_clarity: 73.7
   agent_readiness:
-    score: 22.7
+    score: 18.6
     band: agent-aware
     dimensions:
       spec_presence: false
@@ -27,9 +25,9 @@ kin_score:
       mcp_server: false
       auth_clarity: served
       idempotency: false
-      error_semantics: documented
+      error_semantics: derived
       openapi_examples: false
-      rate_limit_signal: documented
+      rate_limit_signal: derived
       event_surface_described: false
       agent_skills: true
       well_known_catalog: true
@@ -40,6 +38,12 @@ kin_score:
       protected_resource_metadata: false
       dynamic_client_registration: false
       agentic_commerce: false
+  regulatory:
+    applies: true
+    regime: Horizontal (data, software, accessibility, platform)
+    regime_id: horizontal
+    score: 39.2
+    matched_via: fallback
   provenance:
     mcp: derived
     skills: first-party

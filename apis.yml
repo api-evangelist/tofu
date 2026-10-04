@@ -63,6 +63,7 @@ tags:
 - Lead Generation
 - Agents
 - Contact Data
+- A2A
 apis:
 - name: Tofu Enrich API
   description: 'Credit-metered company and people data enrichment. Two entities —
@@ -173,3 +174,10 @@ x-enrichment:
   status: enriched
   artifacts_added: 21
   pass: local-v1
+x-a2a:
+  verified: true
+  probed: '2026-09-26'
+  url: "https://docs.tofuhq.com/.well-known/agent-card.json"
+  grade: "conformant"
+  protocol_version: "1.0.0"
+  control: 404
